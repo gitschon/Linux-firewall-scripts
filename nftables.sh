@@ -19,7 +19,7 @@ case "$1" in
         # Flushing old ruleset
         $NFT flush ruleset
 
-	# Creating needable tables
+	# Creating tables
 	$NFT add table ip filter
 	$NFT add table mynat
 
@@ -28,15 +28,15 @@ case "$1" in
 	$NFT add chain ip filter FORWARD { type filter hook forward priority 0 \; policy drop \; }
 	$NFT add chain ip filter OUTPUT { type filter hook output priority 0 \; policy drop \; }
 
-	# Creating chains for mynat table
+	# Creating chains for nat table
         $NFT add chain mynat prerouting { type nat hook prerouting priority 0 \; } 
         $NFT add chain mynat postrouting { type nat hook postrouting priority 0 \; } 
 
-	# Adding dmynat rule to publish the web server to the internet
+	# Adding dnat rule to publish the web server to the internet
         $NFT add rule mynat prerouting iifname $EXT_INT tcp dport {80, 443} dnat $WEBSRV_IP
         $NFT add rule filter FORWARD iifname $EXT_INT tcp dport {80, 443} ip daddr $WEBSRV_IP oifname $LOCAL_INT ct state { new } counter accept 
 
-	# Adding smynat and forward rules to opening full internet acsess to local net
+	# Adding snat and forward rules to opening full internet acsess to local net
         $NFT add rule mynat postrouting ip saddr $LOCAL_NET oifname $EXT_INT snat $EXT_IP
         $NFT add rule filter FORWARD iifname $EXT_INT oifname $LOCAL_INT ip daddr $LOCAL_NET ct state { established,related } counter accept 
         $NFT add rule filter FORWARD iifname $LOCAL_INT oifname $EXT_INT ip saddr $LOCAL_NET ct state { new,established,related } counter accept 
