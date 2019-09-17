@@ -13,7 +13,7 @@ case "$1" in
     start)
         echo "Starting nftables"
 
-	# Enabling Forwsrding
+	# Enabling Forwarding
 	sysctl net.ipv4.ip_forward=1
 
         # Flushing old ruleset
