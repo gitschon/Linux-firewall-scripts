@@ -38,8 +38,8 @@ case "$1" in
 
 	# Adding snat and forward rules to opening full internet acsess to local net
         $NFT add rule mynat postrouting ip saddr $LOCAL_NET oifname $EXT_INT snat $EXT_IP
-        $NFT add rule filter FORWARD iifname $EXT_INT oifname $LOCAL_INT ip daddr $LOCAL_NET ct state { established,related } counter accept 
-        $NFT add rule filter FORWARD iifname $LOCAL_INT oifname $EXT_INT ip saddr $LOCAL_NET ct state { new,established,related } counter accept 
+        $NFT add rule filter FORWARD iifname $EXT_INT oifname $LOCAL_INT ip daddr $LOCAL_NET ct state { established, related } counter accept 
+        $NFT add rule filter FORWARD iifname $LOCAL_INT oifname $EXT_INT ip saddr $LOCAL_NET ct state { new, established, related } counter accept 
 
 	# Dropping invalid packets
         $NFT add rule filter INPUT ct state { invalid } counter drop
