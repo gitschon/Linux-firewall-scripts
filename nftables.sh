@@ -64,6 +64,9 @@ case "$1" in
         # It permits an access to the localhost from the internet for the support team 
 	$NFT add rule filter INPUT iifname $EXT_INT ip saddr { $ADMIN_IPS } tcp dport 22 ct state new accept
 
+        # It permits icmp echo requests from the internet
+	$NFT add rule filter INPUT iifname $EXT_INT icmp type echo-request ct state { new } counter accept
+
         # It permits all traffic to localhost from localnet
 	$NFT add rule filter INPUT iifname $LOCAL_INT ip daddr $LOCAL_IP ct state { new, established, related } counter accept
         ;;
